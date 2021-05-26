@@ -160,8 +160,8 @@ start :-
     write(("Processor :", PROCESSOR, ", Rs :", cost(PROCESSOR_COST))), nl,
     write(("Graphic Card: ", GRAPHIC_CARD, ", Rs :", cost(GRAPHIC_CARD_COST))), nl,
     write(("MotherBoard: ", MOTHERBOARD, ", Rs :", cost(MOTHERBOARD_COST))), nl,
-    write(("RAM: ", RAM,", Rs :", cost(MOTHERBOARD_COST))), nl,
-    write(("Storage: ", STORAGE, ", Rs :", cost(PROCESSOR_COST))), nl, nl,
+    write(("RAM: ", RAM,", Rs :", cost(RAM_COST))), nl,
+    write(("Storage: ", STORAGE, ", Rs :", cost(STORAGE_COST))), nl, nl,
     write(("Total Estimated Cost for the PC Build\nRs :", TOTAL_COST)),nl,nl,
     
     write("Above Mentioned prices are estimates and may change. "), nl.

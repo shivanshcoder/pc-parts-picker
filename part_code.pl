@@ -1,13 +1,18 @@
+user_category(casual).
+user_category(workbench).
+user_category(gaming).
 
 compatible(X, Y) :- compatible_product(Y, X); compatible_product(X, Y).
 
 choose_processor(USER_CATEGORY, CHOSEN) :-
     
     % Present the prompt
-    write("\n\n Please Choose Processor"), nl,
+    write("\n\nAvailable Processors"), nl,
     
     % Present all the choices according to User
     forall(category(PRODUCTS, processor, USER_CATEGORY), (write(PRODUCTS), nl)),
+
+    write("Please choose a Processor: "), nl,
 
     % Get the response
     read(CHOSEN),
@@ -15,13 +20,32 @@ choose_processor(USER_CATEGORY, CHOSEN) :-
     (category(CHOSEN, processor, USER_CATEGORY))->
         !
         ;
-        write("Error Invalid Choice"), nl, 
+        write("Error,\nInvalid Processor Choice"),
         choose_processor(USER_CATEGORY, CHOSEN).
+
+choose_graphic_card(USER_CATEGORY, CHOSEN) :-
+    
+    % Present the prompt
+    write("\n\nAvailable Graphics Card"), nl,
+    
+    % Present all the choices according to User
+    forall(category(PRODUCTS, graphic_card, USER_CATEGORY), (write(PRODUCTS), nl)),
+
+    write("Please choose a Graphics Card: "), nl,
+
+    % Get the response
+    read(CHOSEN),
+
+    (category(CHOSEN, graphic_card, USER_CATEGORY))->
+        !
+        ;
+        write("Error,\nInvalid Graphic Card Choice"),
+        choose_graphic_card(USER_CATEGORY, CHOSEN).
 
 choose_motherboard(USER_CATEGORY, PROCESSOR, CHOSEN):-
     
     % Present the prompt
-    write("\n\n Please Choose a Motherboard"), nl,
+    write("\n\nAvailable Motherboards"), nl,
 
     % Present all the choices according to needs and compatibility
     forall(
@@ -29,81 +53,115 @@ choose_motherboard(USER_CATEGORY, PROCESSOR, CHOSEN):-
         (write(PRODUCTS), nl)
         ),
 
+    write("Please choose a MotherBoard: "),  nl,
+
     % Get the response
     read(CHOSEN),
 
     (category(CHOSEN, motherboard, USER_CATEGORY), compatible(CHOSEN, PROCESSOR))->
         !
         ;
-        write("Error Invalid Choice"), nl, 
+        write("Error,\nInvalid Motherboard Choice"), 
         choose_motherboard(USER_CATEGORY, PROCESSOR, CHOSEN).
 
-choose_storage(USER_CATEGORY, CHOSEN, AMOUNT)
+choose_storage(USER_CATEGORY, CHOSEN):-
 
-start:-
-    choose_processor(casual, PROCESSOR),
-    choose_motherboard(casual, PROCESSOR, MOTHERBOARD),
-    write("\n\nYou Chose"),nl,
-    write(PROCESSOR), nl,
-    write(MOTHERBOARD).
+    % Present the prompt
+    write("\n\nAvailable Storages"), nl,
 
-%   Displays and prompts user to choose one of the product
-%   USER_CATEGORY is the Type of the user(casual/gaming/workbench)
-%   CHOSEN is the product chosen by the user 
-choose_product(USER_CATEGORY,PRODUCT_TYPE, CHOSEN):-
-    
-    % Write the Prompts
-    write("\n\nChoosing "),write(PRODUCT_TYPE),nl,
-    write("Please Pick a product from the provided list:\n"),
+    % Present all the choices according to needs and compatibility
+    forall(
+        (category(PRODUCTS, storage, USER_CATEGORY)),
+        (write(PRODUCTS), nl)
+        ),
 
-    % Prints out all the prducts according to product type and user category
-    forall(category(PRODUCTS, PRODUCT_TYPE, USER_CATEGORY), (write(PRODUCTS),nl)),
+    write("Please choose a Storage: "),  nl,
 
-    % Get the user response
+    % Get the response
     read(CHOSEN),
 
-    % Get the list of the valid entries again, so that we can check the validity of input
-    category(PRODUCTS, PRODUCT_TYPE, USER_CATEGORY),
-
-    % Check user choice against the valid response
-    (CHOSEN=@=PRODUCTS) ->
-        % Input valid
-        % Return normal
+    (category(CHOSEN, storage, USER_CATEGORY))->
         !
         ;
-        % The response is not valid
-        write("\nError\n Please Choose a valid response\n"),
-        choose_product(USER_CATEGORY, PRODUCT_TYPE, CHOSEN).
-        
-% loop_choices(USER_CATEGORY, )
+        write("Error Invalid Storage Choice"), nl, 
+        choose_storage(USER_CATEGORY, CHOSEN).
 
-starast :-
-    write("Welcome to PC Part Picker"), nl,
-    write("Lets start with the usage."), nl,
+
+choose_ram(USER_CATEGORY, MOTHERBOARD, CHOSEN):-
+    
+    % Present the prompt
+    write("\n\nAvailable RAM sticks"), nl,
+
+    % Present all the choices according to needs and compatibility
+    forall(
+        (category(PRODUCTS, ram, USER_CATEGORY), compatible(PRODUCTS, MOTHERBOARD)),
+        (write(PRODUCTS), nl)
+        ),
+
+    write("Please choose a RAM stick: "),  nl,
+
+    % Get the response
+    read(CHOSEN),
+
+    (category(CHOSEN, ram, USER_CATEGORY), compatible(CHOSEN, MOTHERBOARD))->
+        !
+        ;
+        write("Error,\nInvalid RAM Choice"), 
+        choose_ram(USER_CATEGORY, MOTHERBOARD, CHOSEN).
+
+
+get_user_category(USER_CATEGORY):-
+    % User Usage Type Input and Prompt
     write("\n\nHow are you going to be using the system:"), nl,
     write("gaming\ncasual\nworkbench\n"),
+
     read(USER_CATEGORY),
-    choose_product(USER_CATEGORY,processor,PROCESSOR),
-    choose_product(USER_CATEGORY,graphic_card,GRAPHIC_CARD),
-    choose_product(USER_CATEGORY,ram,RAM),
-    write("\n\n You Chose"),nl,
-    write(PROCESSOR),nl,write(GRAPHIC_CARD), nl, write(RAM),nl,
-    cost(PROCESSOR,PROCESSOR_COST),cost(GRAPHIC_CARD,GRAPHIC_CARD_COST),cost(RAM, RAM_COST),
-    write(PROCESSOR_COST),nl,write(GRAPHIC_CARD_COST),nl,write(RAM_COST),nl,
-    TOTAL_COST is PROCESSOR_COST + GRAPHIC_CARD_COST + RAM_COST,
-    write("TOTAL_COST"),write(TOTAL_COST).
-
-find_mb(USER_CATEGORY, MB, PROCESSOR):-
-    category(MB, motherboard, USER_CATEGORY), compatible(MB, PROCESSOR).
-
-tempst:-
-    write("Please Enter the CPU :"),
-    read(A),
-    forall(find_mb(casual, MB, A), (write(MB),nl)),
-    read(RMB),
-    find_mb(casual, RMB, A) ->
-    write("FOUND");write("No scuh Product").
+    
+    user_category(USER_CATEGORY) ->
+    !
+    ;
+    write("Error,\nInvalid User Category Choice"), 
+    get_user_category(USER_CATEGORY).
 
 
-tt:-
-    forall((category(MB, motherboard, casual), compatible(MB, intel_i3)), (write(MB), nl)).
+
+start :-
+    % Prompts
+    write("Welcome to PC Part Picker"), nl,
+    write("Lets start with the usage."), nl,
+    
+    get_user_category(USER_CATEGORY),
+
+    % Processor
+    choose_processor(USER_CATEGORY, PROCESSOR),
+    
+    % Graphic Card
+    choose_graphic_card(USER_CATEGORY, GRAPHIC_CARD),
+    
+    % MotherBoard
+    choose_motherboard(USER_CATEGORY, PROCESSOR, MOTHERBOARD),
+    
+    % RAM
+    choose_ram(USER_CATEGORY, MOTHERBOARD, RAM),
+    
+    % Storage
+    choose_storage(USER_CATEGORY, STORAGE),
+
+    % Getting the costs of the products
+    cost(PROCESSOR,PROCESSOR_COST),
+    cost(GRAPHIC_CARD,GRAPHIC_CARD_COST),
+    cost(RAM,RAM_COST),
+    cost(MOTHERBOARD,MOTHERBOARD_COST),
+    cost(STORAGE, STORAGE_COST),
+    TOTAL_COST is PROCESSOR_COST + GRAPHIC_CARD_COST + RAM_COST + MOTHERBOARD_COST + STORAGE_COST,
+
+    % Printing out the products along with estimated cost
+    write("\n\n The Selected Components :-"),nl,
+    write(("Processor :", PROCESSOR, ", Rs :", cost(PROCESSOR_COST))), nl,
+    write(("Graphic Card: ", GRAPHIC_CARD, ", Rs :", cost(GRAPHIC_CARD_COST))), nl,
+    write(("MotherBoard: ", MOTHERBOARD, ", Rs :", cost(MOTHERBOARD_COST))), nl,
+    write(("RAM: ", RAM,", Rs :", cost(MOTHERBOARD_COST))), nl,
+    write(("Storage: ", STORAGE, ", Rs :", cost(PROCESSOR_COST))), nl, nl,
+    write(("Total Estimated Cost for the PC Build\nRs :", TOTAL_COST)),nl,nl,
+    
+    write("Above Mentioned prices are estimates and may change. "), nl.

@@ -50,10 +50,10 @@ def categorize(cards, name):
 def random_compatibility(product_list1, product_list2, pair_name):
     compatibility_list = []#"compatible(X, Y) :- compatible_product(Y, X); compatible_product(X, Y).\n"]
     for product1 in product_list1:
-        if random.randint(0,1):
-            for product2 in product_list2:
-                if random.randint(0,1):
-                    compatibility_list.append("compatible_product({},\t{}).\n".format(product1['name'], product2['name']))
+        #if random.randint(0,5):
+        for product2 in product_list2:
+            if random.randint(0,1):
+                compatibility_list.append("compatible_product({},\t{}).\n".format(product1['name'], product2['name']))
 
     compatiblity[pair_name] = compatibility_list
 
@@ -113,9 +113,9 @@ storage_comapnies = ['hdd_sata', 'ssd_sata', 'ssd_m2', 'ssd_nvme_m2']
 
 storage_comapnies = {
     'hdd_':
-        [ ["sata"], [1,2,4,8], ["TB"]],
+        [ ["sata_"], [1,2,4,8], ["TB"]],
     "ssd_":
-        [ ["sata", "m2", "nvme_m2"],[125,250, 500, 1000, 2000], ["GB"]]
+        [ ["sata_", "m2_", "nvme_m2_"],[125,250, 500, 1000, 2000], ["GB"]]
 }
 
 storage = distributor(storage_comapnies, 2)
